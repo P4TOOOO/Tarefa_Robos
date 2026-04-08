@@ -160,6 +160,9 @@ ros2 run tarefarobo subscriber
 ```bash
 ros2 run tarefarobo publisher
 ```
+Rodando o nó o publisher vai publicar as mesagens e ir aumentando o contador e o subscriber ira ler as mensagens publicadas  
 
+![ROS.png](ROS.png)
+  
 
 
