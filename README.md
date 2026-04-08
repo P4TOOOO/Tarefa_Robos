@@ -93,5 +93,73 @@ E por fim a inicialização da main de novo
 if __name__ == '__main__':
     main()
 ```
+# Alterações nos setups  
+Depois de concluir o codigo precisamos atualizar alguns setups para o nó rodar corretamente sendo eles o setup.py e o package.xml, para o setup.py precisamos adicionar entry points para o ROS interpretar os comandos que vamos dar no terminal depois, normalmente os entry points estão assim  
+```python
+    entry_points={
+        'console_scripts': [
+
+        ],
+    },
+```
+E quando adicionarmos eles ficarão assim  
+```python
+    entry_points={
+        'console_scripts': [
+            'publisher = tarefarobo.publisher_python:main',
+            'subscriber = tarefarobo.subscriber_python:main',
+        ],
+    },
+```
+Agora para o package.xml precisamos colocar as bibliotecas que o nosso nó usa colocando as linhas  
+```xml
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+```
+Fazendo o arquivo ficar assim  
+```xml
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>tarefarobo</name>
+  <version>0.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="felipiniobrsp@gmail.com">pato</maintainer>
+  <license>TODO: License declaration</license>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
+```
+# Buildar e rodar o nó  
+Depois de todas essas alterações podemos buildar o nosso pacote usando o comando  
+```bash
+colcon build --packages-select tarefarobo
+```
+Ou usamos só o colcon build para buildar todos os pacotes de uma vez  
+## Rodar o nó  
+Se tudo der certo com o colcon build podemos rodar o nó primeiro inicializamos o ROS em dois terminais usando essa sequencia de comandos  
+```bash
+source /opt/ros/jazzy/setup.zsh
+cd ~/program_ws
+source install/setup.bash
+```
+Agora com o ROS iniciado rodamos um comando em cada terminal  
+```bash
+ros2 run tarefarobo subscriber
+```
+```bash
+ros2 run tarefarobo publisher
+```
+
 
 
