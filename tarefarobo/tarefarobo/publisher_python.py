@@ -9,7 +9,7 @@ class publisher(Node): #Cria a classe do publisher
 
         super().__init__("publisher_node")  #Chama a classe do node e da um nome pra ela 
         self.publisher = self.create_publisher(String, 'topic', 10) #Cria o publisher e coloca parametros de tipos de mensagem e o topico
-        tempo = 0.5 
+        tempo = 0.5 #Variavel de tempo
         self.timer = self.create_timer(tempo, self.callback) #Cria um timer para rodar a função callback
         self.msg_num = 0 #Contagem
     
