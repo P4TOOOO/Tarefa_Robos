@@ -26,6 +26,8 @@ setup(
         'console_scripts': [
             'publisher = tarefarobo.publisher_python:main',
             'subscriber = tarefarobo.subscriber_python:main',
+            'number_publisher = tarefarobo.number_publisher:main',
+            'number_count = tarefarobo.number_count:main',
         ],
     },
 )
