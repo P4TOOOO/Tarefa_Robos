@@ -1,6 +1,6 @@
 # Publisher e Subscriber
 Esse pacote possui dois nós o publisher e o subscriber, o publisher ele publica dados em um topico e o subscriber le esses dados que são publicados e faz algo com eles  
-# Criação do pacote  
+## Criação do pacote  
 Para criar o pacote usamos alguns comandos que utilizam o ROS nesse projeto estou usando o ROS jazzy que ja precisa estar instalado no seu pc, primeiro crie uma pasta para ser seu workspace  
 ```bash
 cd ~
@@ -237,7 +237,58 @@ No init criamos dois topicos um subscriber e um publisher
         self.sub = self.create_subscription(Int64, topic, self.callback, 10)
         self.counter = self.create_publisher(Int64, topic_count, 10)
 ```
-Agora no callback uguardamos 
+Agora no callback guardamos a msg.data em uma variavel, usamos o count para começar a contagem dos valores e depois publicamos esse novo valor usando o publisher no topico /number_count  
+```python
+    def callback (self, msg):
+
+        #Armazena o valor lido pelo subscriber
+        self.number = msg.data
+
+        #Conta os numeros recebidos
+        self.count = self.count + self.number
+
+        #publica a soma dos numeros recebidos
+        msg_count = Int64()
+        msg_count.data = self.count
+        self.counter.publish(msg_count)    
+
+        #Log para aparecer as soma 
+        self.get_logger().info("A soma dos valores deu: %d" % msg_count.data)
+```
+E o resto continua igual  
+```python
+def main (args=None):
+
+    rclpy.init(args=args)
+    number_count = number_count_node()
+    rclpy.spin(number_count)
+    number_count.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```  
+Precisamos depois disso atualizar o setup.py para colocar os novos entry points  
+```python
+'number_publisher = tarefarobo.number_publisher:main',
+'number_count = tarefarobo.number_count:main',
+```
+## Rodando o node  
+Antes de rodar o node precisamos buildar ele usando  
+```bash
+colcon build
+```
+E para rodar os nodes rodamos  
+```bash
+ros2 run tarefarobo number_publisher
+ros2 run tarefarobo number_count
+```
+E se quisermos ver o que esta sendo publicado no topico rodamos  
+```bash
+ros2 topic echo /number_count
+```
+Se tudo der certo ficara assim e rodando o rqt_graph tambem  
+![ROS.png](counter.png)  
 
 
 
