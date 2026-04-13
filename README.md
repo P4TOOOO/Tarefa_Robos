@@ -162,7 +162,85 @@ ros2 run tarefarobo publisher
 ```
 Rodando o nó o publisher vai publicar as mesagens e ir aumentando o contador e o subscriber ira ler as mensagens publicadas  
 
-![ROS.png](ROS.png)
+![ROS.png](ROS.png)  
+# Contador utilizando o ROS  
+Para fazer o contador utilizei o mesmo pacote apenas fiz outros nodes para fazer os contadores, a proposta é fazer um node que publica apenas um valor e outro node que leia esse valor coloque esse numero no contador e publique o resultado em outro topico
+## Explicando o codigo  
+### Publisher  
+O cogido do publisher é quase igual o outro porem ao invez de mandarmos strings mandamos apenas um numero  
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Int64 #Int64 é usado para publicar numeros
+```
+O init é igual  
+```python
+def __init__ (self):
+
+        topic = "/number" #Topico que sera publicado
+
+        super().__init__("number_publisher")
+
+        #Cria o publisher
+        self.number_publisher = self.create_publisher(Int64, topic, 10)
+
+        #Timers
+        timer = 0.5
+        self.timer = self.create_timer(timer, self.callback)
+```
+Agora o callback muda um pouco  
+```python
+    def callback (self):
+
+        #Publica o numero 5 varias vezes 
+        msg = Int64() #Tipo da mensagem int
+        msg.data = 5 #Um numero apenas
+        self.number_publisher.publish(msg) 
+        self.get_logger().info("Publicando o numero %d" % msg.data)
+```
+O resto para rodar o node é igual  
+```python
+def main(args=None):
+
+    rclpy.init(args=args)
+    number_publisher = number_publisher_node()
+    rclpy.spin(number_publisher)
+    number_publisher.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+### Subscriber e publisher  
+Agora o outro nó que muda bastante os imports importamos o int64 de novo  
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Int64
+```
+No init criamos dois topicos um subscriber e um publisher  
+```python
+    def __init__(self):
+
+        #Topico para receber
+        topic = "/number"
+
+        #Novo topico para enviar
+        topic_count = "/number_count"
+
+        super().__init__('number_count')
+
+        #Contador
+        self.count = 0
+
+        #Cria o subscriber e o novo publisher
+        self.sub = self.create_subscription(Int64, topic, self.callback, 10)
+        self.counter = self.create_publisher(Int64, topic_count, 10)
+```
+Agora no callback uguardamos 
+
+
+
   
 
 
